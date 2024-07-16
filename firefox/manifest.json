@@ -23,5 +23,8 @@
         "src/styles/web-player.css"
       ]
     }
+  ],
+  "permissions": [
+    "*://pega-a-letra-pro-pai.onrender.com/*"
   ]
 }

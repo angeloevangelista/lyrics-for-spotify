@@ -246,6 +246,6 @@ currentSong.subscribe(async next => {
 
 currentLyrics.subscribe(renderLyrics);
 
-// currentTimestamp.subscribe(setFocusToActiveLine);
+currentTimestamp.subscribe(setFocusToActiveLine);
 
 initialize();

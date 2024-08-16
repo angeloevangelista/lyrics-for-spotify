@@ -5,26 +5,7 @@ const currentSong = observable({
   artist: '',
 });
 
-currentSong.subscribe(async next => {
-  const songLyrics = await fetch(
-    "https://pega-a-letra-pro-pai.onrender.com/api/lyrics?" + new URLSearchParams({
-      song: next.title,
-      artist: next.artist,
-    }),
-  ).then(response => response.json());
-
-  currentLyrics.next(
-    songLyrics.length
-      ? songLyrics
-      : [{ lyrics: "Ooops! Nothing for You here, son!", seconds: 0 }]
-  );
-})
-
-currentLyrics.subscribe(updateLyrics);
-
-currentTimestamp.subscribe(setFocusToActiveLine);
-
-const getLyricsContainer = () => {
+function getLyricsContainer() {
   if (window.location.pathname !== "/lyrics") return
 
   const mainViewContainer = document.querySelector('.main-view-container')
@@ -36,7 +17,7 @@ const getLyricsContainer = () => {
   )?.parentElement?.parentElement;
 }
 
-function updateLyrics() {
+function renderLyrics() {
   const lyricsContainer = getLyricsContainer();
 
   if (!lyricsContainer) return
@@ -49,6 +30,7 @@ function updateLyrics() {
 
   const lyricsRootElement = document.createElement('div');
   lyricsRootElement.classList.add('_Wna90no0o0dta47Heiw');
+  lyricsRootElement.style.paddingTop = "4rem";
 
   currentLyrics.value.forEach(line => {
     const lyricsLineElement = document.createElement('div');
@@ -181,33 +163,52 @@ async function initialize() {
         ?.querySelector('[data-testid=context-item-info-artist]')
         ?.textContent
 
-      currentSong.next({ title, artist })
+      const changedTheSong = !!title && !!artist;
+      
+      const songIsTheSame = (
+        currentSong.value.title === title && currentSong.value.artist === artist
+      );
+
+      if (changedTheSong && !songIsTheSame) {
+        currentSong.next({ title, artist })
+      }
     }).observe(
       playingBar.querySelector('[data-testid=now-playing-widget]'),
       {
         subtree: true,
         childList: true,
       },
-    )
+    );
 
-    document.querySelector('[data-testid=lyrics-button]')?.addEventListener(
+    (function () {
+      const lyricsButton = document.querySelector('[data-testid=lyrics-button]')
+
+      if (!lyricsButton) return
+
+      const lyricsButtonParent = lyricsButton.parentNode;
+
+      lyricsButton.style.display = 'none';
+
+      const newLyricsButton = document.createElement('button');
+
+      newLyricsButton.classList.add(...lyricsButtonParent.lastChild.classList)
+
+      newLyricsButton.innerHTML = LYRICS_FOR_SPOTIFY_ICON_SVG;
+
+      tippy(newLyricsButton, {
+        content: 'Lyrics for Spotify!',
+      });
+
+      lyricsButtonParent.insertBefore(newLyricsButton, lyricsButtonParent.firstChild);
+
+      return newLyricsButton;
+    })()?.addEventListener(
       'click',
-      () => {
-        setTimeout(() => {
-          if (window.location.pathname !== "/lyrics") return
-
-          const lyricsAreLoaded = currentLyrics.value.length > 0;
-
-          if (lyricsAreLoaded) {
-            updateLyrics()
-            return;
-          }
-
-          currentSong.next({
-            title: document.querySelector('[data-testid=context-item-link]')?.innerText,
-            artist: document.querySelector('[data-testid=context-item-info-artist]')?.innerText,
-          });
-        }, 500)
+      (e) => {
+        if (window.location.pathname !== "/lyrics") {
+          window.location.pathname = "/lyrics";
+          return
+        }
       }
     )
 
@@ -219,5 +220,32 @@ async function initialize() {
     });
   })
 };
+
+currentSong.subscribe(async next => {
+  currentLyrics.next([{ lyrics: "Loading the lyrics...", seconds: 0 }])
+
+  try {
+    const songLyricsResponse = await fetch(
+      "https://pega-a-letra-pro-pai.onrender.com/api/lyrics?" + new URLSearchParams({
+        song: next.title,
+        artist: next.artist,
+      }),
+    );
+
+    const songLyrics = await songLyricsResponse.json();
+
+    currentLyrics.next(
+      songLyrics.length
+        ? songLyrics
+        : [{ lyrics: "Ooops! Nothing for You here, son!", seconds: 0 }]
+    );
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+currentLyrics.subscribe(renderLyrics);
+
+// currentTimestamp.subscribe(setFocusToActiveLine);
 
 initialize();

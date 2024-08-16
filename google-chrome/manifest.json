@@ -3,7 +3,7 @@
   "name": "Lyrics for Spotify",
   "description": "This is an unofficial extension that puts back the Spotify Lyrics!",
   "homepage_url": "https://github.com/angeloevangelista/lyrics-for-spotify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icons": {
     "16": "./icons/16.png",
     "48": "./icons/48.png",
@@ -16,6 +16,9 @@
         "https://open.spotify.com/*"
       ],
       "js": [
+        "src/lib/popper.min.js",
+        "src/lib/tippy-bundle.umd.min.js",
+        "src/lib/consts.js",
         "src/lib/observable.js",
         "src/index.js"
       ],

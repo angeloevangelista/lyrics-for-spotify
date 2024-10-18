@@ -126,6 +126,26 @@ function waitForPlayingBar() {
   })
 }
 
+function waitForElement(container, selector) {
+  return new Promise((resolve, reject) => {
+    new MutationObserver((mutationList, observer) => {
+      const foundElement = container.querySelector(selector)
+
+      if (!foundElement) return
+
+      observer.disconnect();
+      resolve(foundElement);
+    }).observe(
+      container,
+      {
+        attributes: false,
+        childList: true,
+        subtree: true,
+      },
+    )
+  });
+}
+
 async function initialize() {
   waitForPlayingBar().then(async playingBar => {
     new MutationObserver((mutationList, observer) => {
@@ -164,7 +184,7 @@ async function initialize() {
         ?.textContent
 
       const changedTheSong = !!title && !!artist;
-      
+
       const songIsTheSame = (
         currentSong.value.title === title && currentSong.value.artist === artist
       );
@@ -185,9 +205,23 @@ async function initialize() {
 
       if (!lyricsButton) return
 
-      const lyricsButtonParent = lyricsButton.parentNode;
+      if (!!(
+        lyricsButton.offsetWidth ||
+        lyricsButton.offsetHeight ||
+        lyricsButton.getClientRects().length
+      )) {
+        const hideLyricsButtonStyle = document.createElement("style");
 
-      lyricsButton.style.display = 'none';
+        hideLyricsButtonStyle.innerHTML = `
+          .${Array.from(lyricsButton.classList).join('.')} {
+            display: none !important;
+          }
+        `;
+
+        document.head.appendChild(hideLyricsButtonStyle);
+      }
+
+      const lyricsButtonParent = lyricsButton.parentNode;
 
       const newLyricsButton = document.createElement('button');
 
@@ -205,10 +239,82 @@ async function initialize() {
     })()?.addEventListener(
       'click',
       (e) => {
-        if (window.location.pathname !== "/lyrics") {
-          window.location.pathname = "/lyrics";
+        if (window.location.pathname.startsWith("/lyrics")) {
+          document.querySelector('[data-testid=home-button]')?.click();
           return
         }
+
+        const lyricsTab = window.open('/lyrics', '_blank');
+
+        const checkIfChildTabIsClosed = setInterval(
+          () => {
+            if (lyricsTab.closed) {
+              window.location.pathname = "/lyrics";
+              clearInterval(checkIfChildTabIsClosed)
+            }
+          },
+          200,
+        )
+
+        lyricsTab.addEventListener(
+          "message",
+          (event) => {
+            if (!String(event.data).startsWith("@lyrics-for-spotify")) {
+              return
+            }
+
+            const action = String(event.data).split(":").pop();
+
+            switch (action) {
+              case "close-child":
+                clearInterval(checkIfChildTabIsClosed)
+                lyricsTab.close();
+                window.location.pathname = "/lyrics";
+              case "close-parent":
+                window.close();
+            }
+          }
+        )
+
+        lyricsTab.onload = async () => {
+          try {
+            const queueButton = await waitForElement(
+              lyricsTab.document.body,
+              '[data-testid=control-button-queue]',
+            )
+
+            const devicesButton = queueButton.parentNode.nextSibling.querySelector("button")
+
+            if (devicesButton.dataset.active !== "true") {
+              devicesButton.click();
+            }
+
+            const devicesList = await waitForElement(
+              lyricsTab.document.body,
+              '[data-testid=devices-list-]',
+            )
+
+            const forgetCurrentPlayerButton = devicesList
+              .parentElement
+              .parentElement
+              .parentElement
+              .parentElement
+              .firstChild
+              .querySelector('[data-testid=more-button]');
+
+            const currentPlayerIsExternal = !!forgetCurrentPlayerButton;
+
+            if (!currentPlayerIsExternal) {
+              devicesList.querySelector('li:first-child').click();
+            } else {
+              devicesButton.click();
+            }
+
+            lyricsTab.postMessage("@lyrics-for-spotify:close-parent");
+          } catch {
+            lyricsTab.postMessage("@lyrics-for-spotify:close-child");
+          }
+        };
       }
     )
 

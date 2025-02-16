@@ -1,0 +1,19 @@
+#lyrics-for-spotify-lyrics-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#lyrics-for-spotify-lyrics-iframe.hide {
+  display: none;
+}
+
+#lyrics-for-spotify-lyrics-button svg {
+  filter: invert(1);
+  fill: currentcolor;
+
+  width: var(--encore-graphic-size-decorative-smaller, 16px) !important;
+  height: var(--encore-graphic-size-decorative-smaller, 16px) !important;
+}

@@ -63,7 +63,7 @@ const LyricsError: React.FC = () => {
           wish it have taken an smile from You If it keeps happening, please
           reach out on the{" "}
           <a
-            href="https://chromewebstore.google.com/detail/lyrics-for-spotify"
+            href="https://chromewebstore.google.com/detail/ihhndlldaidolpmnejnaioncoonlfaac"
             target="_blank"
             rel="noopener noreferrer"
           >

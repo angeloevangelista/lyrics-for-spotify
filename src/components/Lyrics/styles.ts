@@ -1,7 +1,9 @@
+import { lighten } from "polished";
 import styled from "styled-components";
 
 export const Container = styled.div<{ $background: string }>`
   flex: 1;
+  position: relative;
 
   display: flex;
   flex-direction: column;
@@ -71,5 +73,52 @@ export const Credits = styled.div`
 
   a {
     color: inherit;
+  }
+`;
+
+export const OptionsContainer = styled.ul<{ $background: string }>`
+  position: fixed;
+  right: 1.6rem;
+  bottom: 1.6rem;
+
+  list-style: none;
+
+  width: auto;
+  height: min-content;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  > li {
+    width: 3.2rem;
+    height: 3.2rem;
+
+    button {
+      width: 100%;
+      height: 100%;
+
+      padding: 4px;
+      border-radius: 100%;
+
+      border: 0;
+      background-color: ${({ $background }) =>
+        `${lighten(0.1, $background)}CC`};
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      transition: all 0.25s ease-out;
+
+      svg {
+        flex: 1;
+        color: #fff;
+      }
+    }
+
+    button:hover {
+      background-color: ${({ $background }) => lighten(0.25, $background)};
+    }
   }
 `;

@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+set -e
+
 rm -rf dist temp
 
 yarn build

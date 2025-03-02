@@ -27,7 +27,7 @@ interface ILyricsContextData {
   timestamp: number;
 
   setSong: React.Dispatch<React.SetStateAction<ISong | undefined>>;
-  notifyEvent: (key: string, data: any) => void;
+  notifyEvent: (key: string, data?: any) => void;
 }
 
 interface IAppEvent {
@@ -40,7 +40,7 @@ const LyricsContext = createContext<ILyricsContextData>(
 );
 
 const LyricsContextProvider: React.FC<ILyricsContextProps> = ({ children }) => {
-  const [song, setSong] = useState<ISong>();
+  const [song, setSong] = useState<ISong | undefined>();
   const [timestamp, setTimestamp] = useState<number>(0);
 
   const songRef = useRef<ISong | undefined>(undefined);

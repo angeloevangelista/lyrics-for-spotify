@@ -168,6 +168,30 @@ async function handleUpdateTimestampEvent(timestamp) {
   console.log({ source: "handleUpdateTimestampEvent", timestamp })
 }
 
+async function handleToggleFullscreenEvent() {
+  if (!window.screenTop && !window.screenY) {
+    document.exitFullscreen();
+    return
+  }
+
+  const lyricsContainerIframe = document.querySelector("#lyrics-for-spotify-lyrics-iframe");
+
+  lyricsContainerIframe.requestFullscreen();
+}
+
+async function handleRequestPictureInPictureEvent() {
+  documentPictureInPicture.requestWindow()
+  console.log({ source: "handleRequestPictureInPictureEvent" })
+}
+
+async function handleRequestCloseEvent() {
+  if (!window.screenTop && !window.screenY) {
+    document.exitFullscreen();
+  }
+
+  toggleLyrics();
+}
+
 async function observeTrackControlChanges() {
   new MutationObserver((mutationList, observer) => {
     const mutationEvent = mutationList.find(p => p.type === 'characterData');
@@ -237,6 +261,15 @@ function listenToLyricsNotifications() {
       switch (event.data?.key) {
         case "set_timestamp":
           handleUpdateTimestampEvent(event.data.data);
+          break;
+        case "toggle_fullscreen":
+          handleToggleFullscreenEvent();
+          break;
+        case "request_picture_in_picture":
+          handleRequestPictureInPictureEvent();
+          break;
+        case "request_close":
+          handleRequestCloseEvent();
           break;
       }
     },

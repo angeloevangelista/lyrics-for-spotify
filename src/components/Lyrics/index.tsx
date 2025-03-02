@@ -1,5 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
+import {
+  BsFullscreen,
+  BsXLg,
+} from "react-icons/bs";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import Loading from "../Loading";
 import { useLyrics } from "../../contexts/LyricsContext";
@@ -25,184 +29,7 @@ const Lyrics: React.FC<LyricsProps> = () => {
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [lyrics, setLyrics] = useState<ILyricsLine[] | undefined>([
-    {
-      seconds: 6,
-      lyrics: "For a while there it was rough",
-    },
-    {
-      seconds: 9,
-      lyrics: "But lately I've been doin' better",
-    },
-    {
-      seconds: 13,
-      lyrics: "Than the last four cold Decembers I recall",
-    },
-    {
-      seconds: 20,
-      lyrics: "And I see my family every month",
-    },
-    {
-      seconds: 23,
-      lyrics: "I found a girl my parents love",
-    },
-    {
-      seconds: 27,
-      lyrics: "She'll come and stay the night",
-    },
-    {
-      seconds: 28,
-      lyrics: "And I think I might have it all",
-    },
-    {
-      seconds: 34,
-      lyrics: "And I thank God every day",
-    },
-    {
-      seconds: 37,
-      lyrics: "For the girl",
-    },
-    {
-      seconds: 38,
-      lyrics: "He sent my way",
-    },
-    {
-      seconds: 40,
-      lyrics: "But I know the things",
-    },
-    {
-      seconds: 42,
-      lyrics: "He gives me",
-    },
-    {
-      seconds: 43,
-      lyrics: "He can take away",
-    },
-    {
-      seconds: 47,
-      lyrics: "And I hold you every night",
-    },
-    {
-      seconds: 50,
-      lyrics: "And that's a feeling I wanna get used to",
-    },
-    {
-      seconds: 55,
-      lyrics: "But there's no man as terrified",
-    },
-    {
-      seconds: 59,
-      lyrics: "As the man who stands to lose you",
-    },
-    {
-      seconds: 67,
-      lyrics: "Oh I hope I don't lose you",
-    },
-    {
-      seconds: 73,
-      lyrics: "Please stay",
-    },
-    {
-      seconds: 77,
-      lyrics: "I want you I need you oh God",
-    },
-    {
-      seconds: 80,
-      lyrics: "Don't take",
-    },
-    {
-      seconds: 84,
-      lyrics: "These beautiful things that I've got",
-    },
-    {
-      seconds: 87,
-      lyrics: "Please stay",
-    },
-    {
-      seconds: 91,
-      lyrics: "I want you I need you oh God",
-    },
-    {
-      seconds: 93,
-      lyrics: "Don't take",
-    },
-    {
-      seconds: 97,
-      lyrics: "These beautiful things that I've got",
-    },
-    {
-      seconds: 100,
-      lyrics: "Oh ooh",
-    },
-    {
-      seconds: 107,
-      lyrics: "Please don't take",
-    },
-    {
-      seconds: 112,
-      lyrics: "I found my mind I'm feelin' sane",
-    },
-    {
-      seconds: 116,
-      lyrics: "It's been a while but I'm finding my faith",
-    },
-    {
-      seconds: 119,
-      lyrics: "If everything's good and it's great",
-    },
-    {
-      seconds: 121,
-      lyrics: "Why do I sit and wait 'til it's gone",
-    },
-    {
-      seconds: 125,
-      lyrics: "Oh I'll tell ya I know I've got enough",
-    },
-    {
-      seconds: 129,
-      lyrics: "I've got peace and I've got love",
-    },
-    {
-      seconds: 133,
-      lyrics: "But I'm up at night thinkin' I just might lose it all",
-    },
-    {
-      seconds: 141,
-      lyrics: "Please stay",
-    },
-    {
-      seconds: 145,
-      lyrics: "I want you I need you oh God",
-    },
-    {
-      seconds: 148,
-      lyrics: "Don't take",
-    },
-    {
-      seconds: 152,
-      lyrics: "These beautiful things that I've got",
-    },
-    {
-      seconds: 155,
-      lyrics: "Oh ooh",
-    },
-    {
-      seconds: 162,
-      lyrics: "Please stay",
-    },
-    {
-      seconds: 166,
-      lyrics: "I want you I need you oh God",
-    },
-    {
-      seconds: 169,
-      lyrics: "I need",
-    },
-    {
-      seconds: 173,
-      lyrics: "These beautiful things that I've got",
-    },
-  ]);
+  const [lyrics, setLyrics] = useState<ILyricsLine[] | undefined>();
 
   const timestampLyricsIndexMap = useMemo(() => {
     if (!song || !lyrics) {
@@ -291,8 +118,20 @@ const Lyrics: React.FC<LyricsProps> = () => {
     [timestampLyricsIndexMap]
   );
 
+  const handleToggleFullScreen = useCallback(() => {
+    notifyEvent("toggle_fullscreen");
+  }, []);
+
+  // const handlePictureInPicture = useCallback(() => {
+  //   notifyEvent("request_picture_in_picture");
+  // }, []);
+
+  const handleClose = useCallback(() => {
+    notifyEvent("request_close");
+  }, []);
+
   return (
-    <SC.Container $background={song?.colorTheme ?? ""}>
+    <SC.Container $background={song?.colorTheme ?? "#121212"}>
       {!song && <LyricsError />}
 
       {isLoading && <Loading />}
@@ -326,6 +165,26 @@ const Lyrics: React.FC<LyricsProps> = () => {
           </a>
         </p>
       </SC.Credits>
+
+      <SC.OptionsContainer $background={song?.colorTheme ?? "#121212"}>
+        <li>
+          <button onClick={handleToggleFullScreen}>
+            <BsFullscreen />
+          </button>
+        </li>
+
+        {/* <li>
+          <button onClick={handlePictureInPicture}>
+            <BsPip />
+          </button>
+        </li> */}
+
+        <li>
+          <button onClick={handleClose}>
+            <BsXLg />
+          </button>
+        </li>
+      </SC.OptionsContainer>
     </SC.Container>
   );
 };

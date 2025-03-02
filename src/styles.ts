@@ -5,14 +5,17 @@ const globalStyles = createGlobalStyle`
     font-family: sans-serif;
   }
 
+  body {
+    background-color: #121212;
+  }
+
   #root {
     display: flex;
     flex-direction: column;
 
-    height: 100vh;
+    min-height: 100vh;
 
     color: #fff;
-    background-color: #121212;
   }
 
   * {

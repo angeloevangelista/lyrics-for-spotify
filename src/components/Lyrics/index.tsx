@@ -1,15 +1,12 @@
 import axios from "axios";
-import {
-  BsFullscreen,
-  BsXLg,
-} from "react-icons/bs";
+import { BsFullscreen, BsXLg } from "react-icons/bs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import Loading from "../Loading";
+import LyricsError from "../LyricsError";
 import { useLyrics } from "../../contexts/LyricsContext";
 
 import * as SC from "./styles";
-import LyricsError from "../LyricsError";
 
 interface ILyricsLine {
   seconds: number;
@@ -93,15 +90,15 @@ const Lyrics: React.FC<LyricsProps> = () => {
   }, [timestamp]);
 
   useEffect(() => {
-    const currentILyricsLine = document.querySelector(
+    const currentLyricsLine = document.querySelector(
       ".current-lyrics-line"
     ) as HTMLElement;
 
-    if (!currentILyricsLine) return;
+    if (!currentLyricsLine) return;
 
     const scrollY = Math.floor(
-      currentILyricsLine.offsetTop -
-        currentILyricsLine.clientHeight / 2 -
+      currentLyricsLine.offsetTop -
+        currentLyricsLine.clientHeight / 2 -
         window.innerHeight * 0.2
     );
 
@@ -121,10 +118,6 @@ const Lyrics: React.FC<LyricsProps> = () => {
   const handleToggleFullScreen = useCallback(() => {
     notifyEvent("toggle_fullscreen");
   }, []);
-
-  // const handlePictureInPicture = useCallback(() => {
-  //   notifyEvent("request_picture_in_picture");
-  // }, []);
 
   const handleClose = useCallback(() => {
     notifyEvent("request_close");
@@ -172,12 +165,6 @@ const Lyrics: React.FC<LyricsProps> = () => {
             <BsFullscreen />
           </button>
         </li>
-
-        {/* <li>
-          <button onClick={handlePictureInPicture}>
-            <BsPip />
-          </button>
-        </li> */}
 
         <li>
           <button onClick={handleClose}>

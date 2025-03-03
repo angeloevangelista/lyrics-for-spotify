@@ -25,14 +25,14 @@ export const LyricsLines = styled.ul`
   font-weight: 700;
   line-height: 1.8em;
 
-  font-size: 1.2rem;
+  font-size: 1.4rem;
 
   @media (min-width: 768px) {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
 
   @media (min-width: 1280px) {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 `;
 

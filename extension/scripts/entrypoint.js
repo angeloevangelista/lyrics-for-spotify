@@ -134,8 +134,8 @@ function getCurrentSong(containersToQueryOn) {
     ?.textContent
 
   const artist = Array.from(containersToQueryOn)
-    ?.find(p => p.querySelector('[data-testid=context-item-info-artist]'))
-    ?.querySelector('[data-testid=context-item-info-artist]')
+    ?.find(p => p.querySelector('[data-testid=context-item-info-subtitles]'))
+    ?.querySelector('[data-testid=context-item-info-subtitles]')
     ?.textContent
 
   const coverArt = Array.from(containersToQueryOn)
@@ -177,11 +177,6 @@ async function handleToggleFullscreenEvent() {
   const lyricsContainerIframe = document.querySelector("#lyrics-for-spotify-lyrics-iframe");
 
   lyricsContainerIframe.requestFullscreen();
-}
-
-async function handleRequestPictureInPictureEvent() {
-  documentPictureInPicture.requestWindow()
-  console.log({ source: "handleRequestPictureInPictureEvent" })
 }
 
 async function handleRequestCloseEvent() {
@@ -264,9 +259,6 @@ function listenToLyricsNotifications() {
           break;
         case "toggle_fullscreen":
           handleToggleFullscreenEvent();
-          break;
-        case "request_picture_in_picture":
-          handleRequestPictureInPictureEvent();
           break;
         case "request_close":
           handleRequestCloseEvent();

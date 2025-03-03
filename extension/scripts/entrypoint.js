@@ -169,7 +169,7 @@ async function handleUpdateTimestampEvent(timestamp) {
 }
 
 async function handleToggleFullscreenEvent() {
-  if (!window.screenTop && !window.screenY) {
+  if (document.fullscreenElement) {
     document.exitFullscreen();
     return
   }
@@ -180,7 +180,7 @@ async function handleToggleFullscreenEvent() {
 }
 
 async function handleRequestCloseEvent() {
-  if (!window.screenTop && !window.screenY) {
+  if (document.fullscreenElement) {
     document.exitFullscreen();
   }
 

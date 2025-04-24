@@ -96,7 +96,7 @@ async function injectExtensionButton() {
 
 async function injectCloseBehaviorOnNativeActions() {
   const containersThatClosesLyrics = [
-    "ul:has([data-testid=top-sentinel])",
+    "[data-testid=top-sentinel]",
     "[data-testid=global-nav-bar]",
     "[data-testid=lyrics-button]",
     "[data-testid=fullscreen-mode-button]",

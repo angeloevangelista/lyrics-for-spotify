@@ -4,7 +4,7 @@ set -e
 
 rm -rf dist temp
 
-yarn build
+pnpm build
 
 mkdir temp
 

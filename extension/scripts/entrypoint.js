@@ -96,7 +96,7 @@ async function injectExtensionButton() {
 
 async function injectCloseBehaviorOnNativeActions() {
   const containersThatClosesLyrics = [
-    "[data-testid=top-sentinel]",
+    "[data-testid=top-sentinel] + [role=presentation]",
     "[data-testid=global-nav-bar]",
     "[data-testid=lyrics-button]",
     "[data-testid=fullscreen-mode-button]",
@@ -187,8 +187,8 @@ async function handleRequestCloseEvent() {
   toggleLyrics();
 }
 
-async function observeTrackControlChanges() {
-  new MutationObserver((mutationList, observer) => {
+function observeTrackControlChanges() {
+  new MutationObserver((mutationList, _) => {
     const mutationEvent = mutationList.find(p => p.type === 'characterData');
 
     if (!mutationEvent) return;
@@ -205,8 +205,8 @@ async function observeTrackControlChanges() {
   )
 }
 
-async function observeSongChanges() {
-  new MutationObserver((mutationList, observer) => {
+function observeSongChanges() {
+  new MutationObserver((mutationList, _) => {
     const addedNodes = mutationList
       .filter(p => p.type === 'childList')
       .reduce((acc, next) => {
@@ -223,8 +223,8 @@ async function observeSongChanges() {
   );
 }
 
-async function observeForAdvertisement() {
-  new MutationObserver((mutationList, observer) => {
+function observeForAdvertisement() {
+  new MutationObserver((mutationList, _) => {
     const addedNodes = mutationList
       .filter(p => p.type === 'childList')
       .reduce((acc, next) => {
@@ -271,7 +271,8 @@ function listenToLyricsNotifications() {
 async function initialize() {
   await injectLyricsContainer();
   await injectExtensionButton();
-  await injectCloseBehaviorOnNativeActions();
+
+  injectCloseBehaviorOnNativeActions();
 
   observeTrackControlChanges();
   observeSongChanges();

@@ -1,8 +1,10 @@
 import { createGlobalStyle } from "styled-components";
 
-const globalStyles = createGlobalStyle`
+const globalStyles = createGlobalStyle<{
+  $fontColor: string;
+}>`
   :root {
-    font-family: sans-serif;
+    font-family: "Raleway", sans-serif;
   }
 
   body {
@@ -15,7 +17,7 @@ const globalStyles = createGlobalStyle`
 
     min-height: 100vh;
 
-    color: #fff;
+    color: ${({ $fontColor }) => $fontColor};
   }
 
   * {

@@ -1,7 +1,10 @@
-import { lighten } from "polished";
+import { darken, lighten } from "polished";
 import styled from "styled-components";
 
-export const Container = styled.div<{ $background: string }>`
+export const Container = styled.div<{
+  $background: string;
+  $fontColor: string;
+}>`
   flex: 1;
   position: relative;
 
@@ -15,8 +18,8 @@ export const Container = styled.div<{ $background: string }>`
   background: ${(props) => props.$background};
 
   --lyrics-color-background: ${(props) => props.$background};
-  --lyrics-color-inactive: rgba(255, 255, 255, 0.4);
-  --lyrics-color-passed: rgba(255, 255, 255, 1);
+  --lyrics-color-inactive: ${(props) => `${props.$fontColor}66`};
+  --lyrics-color-passed: ${(props) => props.$fontColor};
 `;
 
 export const LyricsLines = styled.ul`
@@ -57,7 +60,7 @@ export const LyricLineContent = styled.div`
   display: block;
 `;
 
-export const Credits = styled.div`
+export const Credits = styled.div<{ $fontColor: string }>`
   margin: 0.4rem;
   margin-top: 2rem;
 
@@ -69,14 +72,17 @@ export const Credits = styled.div`
   gap: 0.4rem;
   align-items: center;
 
-  color: rgba(255, 255, 255, 0.3);
+  color: ${(props) => `${props.$fontColor}4D`};
 
   a {
     color: inherit;
   }
 `;
 
-export const OptionsContainer = styled.ul<{ $background: string }>`
+export const OptionsContainer = styled.ul<{
+  $background: string;
+  $fontColor: string;
+}>`
   position: fixed;
   right: 1.6rem;
   bottom: 1.6rem;
@@ -91,10 +97,12 @@ export const OptionsContainer = styled.ul<{ $background: string }>`
   gap: 0.4rem;
 
   > li {
+    position: relative;
+
     width: 3.2rem;
     height: 3.2rem;
 
-    button {
+    > button {
       width: 100%;
       height: 100%;
 
@@ -102,6 +110,7 @@ export const OptionsContainer = styled.ul<{ $background: string }>`
       border-radius: 100%;
 
       border: 0;
+      box-shadow: 0 0 8px -4px #000000cc;
       background-color: ${({ $background }) =>
         `${lighten(0.1, $background)}CC`};
 
@@ -112,13 +121,138 @@ export const OptionsContainer = styled.ul<{ $background: string }>`
       transition: all 0.25s ease-out;
 
       svg {
-        flex: 1;
-        color: #fff;
+        width: 2rem;
+        color: ${({ $fontColor }) => $fontColor};
       }
     }
 
-    button:hover {
+    button:hover,
+    &.active > button {
       background-color: ${({ $background }) => lighten(0.25, $background)};
+    }
+  }
+`;
+
+export const LookAndFeelContainer = styled.ul<{
+  $background: string;
+  $fontColor: string;
+}>`
+  position: absolute;
+  bottom: 80%;
+  right: 120%;
+
+  padding: 1.4rem;
+  border-radius: 8px;
+
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+
+  gap: 1rem;
+
+  text-align: center;
+
+  > li {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.2rem;
+  }
+
+  box-shadow: 0 0 8px -4px #000000cc;
+  background-color: ${({ $background }) => `${lighten(0.1, $background)}F2`};
+`;
+
+export const LookAndFeelItemControls = styled.div<{ $fontColor: string }>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap: 1rem;
+
+  > button {
+    padding: 0.8rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 0;
+    border-radius: 50%;
+    background: none;
+
+    transition: all 0.25s ease-out;
+  }
+
+  > svg,
+  > button:not(.small) svg {
+    width: 1.4rem;
+    height: 1.4rem;
+    color: ${({ $fontColor }) => $fontColor};
+  }
+`;
+
+export const ColorPickerContainer = styled.div<{
+  $background: string;
+  $fontColor: string;
+}>`
+  position: absolute;
+  bottom: 70%;
+  right: 70%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  padding: 1.4rem;
+  border-radius: 8px;
+
+  box-shadow: 0 0 8px -4px #000000cc;
+  background-color: ${({ $background }) => `${lighten(0.1, $background)}F2`};
+
+  > div.buttons {
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
+
+    svg {
+      color: ${({ $fontColor }) => $fontColor};
+    }
+
+    > button {
+      flex: 1;
+
+      height: 2rem;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 0;
+      border-radius: 0.4rem;
+
+      background-color: transparent;
+      transition: all 0.25s ease-out;
+
+      &:last-child {
+        box-shadow: 0 0 8px -4px #000000cc;
+        background-color: ${({ $background }) =>
+          `${darken(0.1, $background)}80`};
+
+        &:hover {
+          background-color: ${({ $background }) => lighten(0.25, $background)};
+        }
+      }
+
+      &:hover {
+        background-color: ${({ $background }) =>
+          `${darken(0.1, $background)}33`};
+      }
     }
   }
 `;

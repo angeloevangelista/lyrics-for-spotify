@@ -1,9 +1,22 @@
 import axios from "axios";
+import { FaCheck } from "react-icons/fa";
+import { Colorful } from "@uiw/react-color";
+import { PiPaintBrush } from "react-icons/pi";
+import { LuPaintRoller } from "react-icons/lu";
+import { TbColorSwatch } from "react-icons/tb";
 import { BsFullscreen, BsXLg } from "react-icons/bs";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { PiProhibitInsetBold } from "react-icons/pi";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import Loading from "../Loading";
 import LyricsError from "../LyricsError";
+import { useTheme } from "../../contexts/ThemeContext";
 import { useLyrics } from "../../contexts/LyricsContext";
 
 import * as SC from "./styles";
@@ -21,12 +34,23 @@ interface LyricsProps {
 }
 
 const Lyrics: React.FC<LyricsProps> = () => {
+  let { theme, setFontColor, setBackgroundColor } = useTheme();
   let { song, timestamp, setSong, notifyEvent } = useLyrics();
 
+  const themeTweakingContainer = useRef<HTMLLIElement>(null);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTweakingTheme, setIsTweakingTheme] = useState(false);
+  const [isTweakingFontColor, setIsTweakingFontColor] = useState(false);
+  const [isTweakingBackgroundColor, setIsTweakingBackgroundColor] =
+    useState(false);
 
   const [lyrics, setLyrics] = useState<ILyricsLine[] | undefined>();
+
+  const backgroundColor = useMemo(
+    () => theme.backgroundColor ?? song?.colorTheme ?? "#121212",
+    [theme, song]
+  );
 
   const timestampLyricsIndexMap = useMemo(() => {
     if (!song || !lyrics) {
@@ -124,7 +148,24 @@ const Lyrics: React.FC<LyricsProps> = () => {
   }, []);
 
   return (
-    <SC.Container $background={song?.colorTheme ?? "#121212"}>
+    <SC.Container
+      $background={backgroundColor}
+      $fontColor={theme.fontColor!}
+      onClick={(event) => {
+        if (!isTweakingTheme || !themeTweakingContainer.current) {
+          return;
+        }
+
+        const clickedOnThemeTweakingContainer =
+          themeTweakingContainer.current.contains(event.target as Node);
+
+        if (!clickedOnThemeTweakingContainer) {
+          setIsTweakingTheme(false);
+          setIsTweakingFontColor(false);
+          setIsTweakingBackgroundColor(false);
+        }
+      }}
+    >
       {!song && <LyricsError />}
 
       {isLoading && <Loading />}
@@ -146,7 +187,7 @@ const Lyrics: React.FC<LyricsProps> = () => {
         </SC.LyricsLines>
       )}
 
-      <SC.Credits>
+      <SC.Credits $fontColor={theme.fontColor!}>
         <p>
           Lyrics provided by{" "}
           <a
@@ -159,11 +200,146 @@ const Lyrics: React.FC<LyricsProps> = () => {
         </p>
       </SC.Credits>
 
-      <SC.OptionsContainer $background={song?.colorTheme ?? "#121212"}>
+      <SC.OptionsContainer
+        $background={backgroundColor}
+        $fontColor={theme.fontColor!}
+      >
         <li>
           <button onClick={handleToggleFullScreen}>
             <BsFullscreen />
           </button>
+        </li>
+
+        <li
+          ref={themeTweakingContainer}
+          className={isTweakingTheme ? "active" : ""}
+        >
+          <button
+            onClick={() => {
+              if (isTweakingTheme) {
+                setIsTweakingFontColor(false);
+                setIsTweakingBackgroundColor(false);
+              }
+              setIsTweakingTheme(!isTweakingTheme);
+            }}
+          >
+            <TbColorSwatch />
+          </button>
+
+          {isTweakingTheme && (
+            <SC.LookAndFeelContainer
+              $background={backgroundColor}
+              $fontColor={theme.fontColor!}
+            >
+              {/* <li>
+                <SC.LookAndFeelItemControls $fontColor={theme.fontColor!}>
+                  <button className="small">
+                    <FiMinus />
+                  </button>
+
+                  <RiFontSize2 />
+
+                  <button className="small">
+                    <FiPlus />
+                  </button>
+                </SC.LookAndFeelItemControls>
+
+                <span>Font Size</span>
+              </li> */}
+
+              <li>
+                <SC.LookAndFeelItemControls $fontColor={theme.fontColor!}>
+                  <button
+                    onClick={() => {
+                      setIsTweakingBackgroundColor(false);
+                      setIsTweakingFontColor(!isTweakingFontColor);
+                    }}
+                  >
+                    <PiPaintBrush />
+                  </button>
+                </SC.LookAndFeelItemControls>
+
+                <span>Font Color</span>
+
+                {isTweakingFontColor && (
+                  <SC.ColorPickerContainer
+                    $background={backgroundColor}
+                    $fontColor={theme.fontColor!}
+                  >
+                    <Colorful
+                      disableAlpha
+                      color={theme.fontColor}
+                      onChange={(color) => {
+                        setFontColor(color.hex);
+                      }}
+                    />
+
+                    <div className="buttons">
+                      <button
+                        onClick={() => {
+                          setIsTweakingFontColor(false);
+                          setFontColor(undefined);
+                        }}
+                      >
+                        <PiProhibitInsetBold />
+                      </button>
+
+                      <button onClick={() => setIsTweakingFontColor(false)}>
+                        <FaCheck />
+                      </button>
+                    </div>
+                  </SC.ColorPickerContainer>
+                )}
+              </li>
+
+              <li>
+                <SC.LookAndFeelItemControls $fontColor={theme.fontColor!}>
+                  <button
+                    onClick={() => {
+                      setIsTweakingFontColor(false);
+                      setIsTweakingBackgroundColor(!isTweakingBackgroundColor);
+                    }}
+                  >
+                    <LuPaintRoller />
+                  </button>
+                </SC.LookAndFeelItemControls>
+
+                <span>Background color</span>
+
+                {isTweakingBackgroundColor && (
+                  <SC.ColorPickerContainer
+                    $background={backgroundColor}
+                    $fontColor={theme.fontColor!}
+                  >
+                    <Colorful
+                      disableAlpha
+                      color={backgroundColor}
+                      onChange={(color) => {
+                        setBackgroundColor(color.hex);
+                      }}
+                    />
+
+                    <div className="buttons">
+                      <button
+                        onClick={() => {
+                          setIsTweakingBackgroundColor(false);
+                          setBackgroundColor(undefined);
+                        }}
+                      >
+                        <PiProhibitInsetBold />
+                      </button>
+
+                      <button
+                        onClick={() => setIsTweakingBackgroundColor(false)}
+                      >
+                        <FaCheck />
+                      </button>
+                    </div>
+                  </SC.ColorPickerContainer>
+                )}
+              </li>
+            </SC.LookAndFeelContainer>
+          )}
         </li>
 
         <li>

@@ -8,8 +8,6 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
-
-  color: #fff;
 `;
 
 export const ErrorText = styled.div`
@@ -26,7 +24,7 @@ export const ErrorText = styled.div`
   }
 `;
 
-export const ErrorDescription = styled.div`
+export const ErrorDescription = styled.div<{ $fontColor: string }>`
   max-width: 70%;
   text-align: center;
 
@@ -37,7 +35,7 @@ export const ErrorDescription = styled.div`
   gap: 0.4rem;
   align-items: center;
 
-  color: rgba(255, 255, 255, 0.3);
+  color: ${(props) => `${props.$fontColor}4D`};
 
   a {
     color: inherit;

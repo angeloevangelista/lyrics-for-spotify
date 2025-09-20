@@ -1,8 +1,12 @@
 import React, { useMemo } from "react";
 
+import { useTheme } from "../../contexts/ThemeContext";
+
 import * as SC from "./styles";
 
 const LyricsError: React.FC = () => {
+  const { theme } = useTheme();
+
   const errorQuote = useMemo(() => {
     const quotes = [
       "No lyrics here, sorry 💔",
@@ -45,6 +49,31 @@ const LyricsError: React.FC = () => {
       "Unfortunately, the lyrics are lost in space... again 🚀",
       "My brain is full of music, but no song lyrics 🎶🧠",
       "I'm a song in search of its lyrics... wish me luck! 🍀",
+      "Oops! The lyrics got caught in traffic 🚗💨",
+      "Lyrics? Nah, just some sweet instrumental vibes 🎸",
+      "The lyrics are taking a nap 💤",
+      "I don't have the lyrics, but I have some good vibes 🌈",
+      "Sorry, the lyrics are currently in a meeting... 🧐",
+      "I'm a song in disguise—no words needed 😉",
+      "It seems the lyrics went on strike 💼✋",
+      "The lyrics are on a coffee break ☕",
+      "You know what? I think the lyrics are ghosting us 👻",
+      "The lyrics are playing hide and seek, and winning 😎",
+      "I'd sing it for you, but the lyrics are at a spa day 🧖‍♀️",
+      "Currently under construction—lyrics coming soon 🏗️",
+      "The lyrics are at the beach 🏖️ Send a postcard!",
+      "Oops, looks like the lyrics took a detour... 😅",
+      "The lyrics are on a secret mission, classified info 🔒",
+      "No lyrics here, just pure musical magic 🪄",
+      "The lyrics are hiding in a secret vault 🏰",
+      "Sorry, the lyrics are in a different dimension 🌌",
+      "This song's got the vibe, but no words yet ✨",
+      "No lyrics for now, but the beat is strong 💪",
+      "The lyrics went to a party... without inviting me 🎉",
+      "I've got melody, but the lyrics are on vacation 🌴",
+      "The lyrics are lost in the digital void 🌐",
+      "Just the rhythm, no words—let's freestyle! 🎤",
+      "Where did those lyrics go? Maybe they're out shopping 🛍️",
     ];
 
     return quotes[Math.floor(quotes.length * Math.random())];
@@ -57,7 +86,7 @@ const LyricsError: React.FC = () => {
         <strong>{errorQuote}</strong>
       </SC.ErrorText>
 
-      <SC.ErrorDescription>
+      <SC.ErrorDescription $fontColor={theme.fontColor!}>
         <p>
           Must confess I was a bit lazy with the error handling, so I really
           wish it have taken an smile from You If it keeps happening, please

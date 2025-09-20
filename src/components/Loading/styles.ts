@@ -26,8 +26,6 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   gap: 1rem;
-
-  color: #fff;
 `;
 
 export const LoadingText = styled.div`
@@ -41,23 +39,23 @@ export const LoadingText = styled.div`
   }
 `;
 
-export const ProgressBarContainer = styled.div`
+export const ProgressBarContainer = styled.div<{ $fontColor: string }>`
   width: 12rem;
   height: 0.25rem;
 
   overflow: hidden;
   border-radius: 9999px;
 
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: ${(props) => `${props.$fontColor}33`};
 `;
 
-export const ProgressBar = styled.div`
+export const ProgressBar = styled.div<{ $fontColor: string }>`
   position: relative;
 
   width: 60%;
   height: 100%;
 
-  background-color: #fff;
+  /* background-color: #fff; */
   border-radius: 9999px;
 
   &::after {
@@ -70,7 +68,7 @@ export const ProgressBar = styled.div`
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.4),
+      ${(props) => `${props.$fontColor}66`},
       transparent
     );
 
@@ -78,7 +76,7 @@ export const ProgressBar = styled.div`
   }
 `;
 
-export const RateMeText = styled.div`
+export const RateMeText = styled.div<{ $fontColor: string }>`
   margin: 0.4rem;
 
   display: flex;
@@ -86,7 +84,7 @@ export const RateMeText = styled.div`
   gap: 0.4rem;
   align-items: center;
 
-  color: rgba(255, 255, 255, 0.3);
+  color: ${(props) => `${props.$fontColor}4D`};
 
   a {
     color: inherit;

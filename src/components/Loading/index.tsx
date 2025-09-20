@@ -1,19 +1,22 @@
 import React from "react";
 
 import * as SC from "./styles";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const Loading: React.FC = () => {
+  const { theme } = useTheme();
+
   return (
     <SC.Container>
       <SC.LoadingText>
         <strong>Loading lyrics...</strong>
       </SC.LoadingText>
 
-      <SC.ProgressBarContainer>
-        <SC.ProgressBar />
+      <SC.ProgressBarContainer $fontColor={theme.fontColor!}>
+        <SC.ProgressBar $fontColor={theme.fontColor!} />
       </SC.ProgressBarContainer>
 
-      <SC.RateMeText>
+      <SC.RateMeText $fontColor={theme.fontColor!}>
         <span>Enjoying the extension so far? :D</span>
         {/* <a
           target="_blank"

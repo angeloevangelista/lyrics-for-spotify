@@ -12,7 +12,7 @@ interface IThemeContextProps {
 
 interface ITheme {
   fontSize: number;
-  fontColor?: string;
+  fontColor: string;
   backgroundColor?: string;
 }
 
@@ -23,17 +23,22 @@ type IThemeContextData = {
   setBackgroundColor: React.Dispatch<string | undefined>;
 };
 
+const DEFAULT_FONT_COLOR = "#ffffff";
 const LOCAL_STORAGE_THEMES_KEY = "lyrics_for_spotify:theme";
 
 const ThemeContext = createContext<IThemeContextData>({} as IThemeContextData);
 
 const ThemeContextProvider: React.FC<IThemeContextProps> = ({ children }) => {
-  const [theme, setTheme] = useState<ITheme>({ fontSize: 24 });
+  const [theme, setTheme] = useState<ITheme>({
+    fontSize: 24,
+    fontColor: DEFAULT_FONT_COLOR,
+  });
 
   useEffect(() => {
     const rawValue = localStorage.getItem(LOCAL_STORAGE_THEMES_KEY);
 
     if (!rawValue) {
+      handleThemeUpdate(theme);
       return;
     }
 
@@ -53,7 +58,10 @@ const ThemeContextProvider: React.FC<IThemeContextProps> = ({ children }) => {
           handleThemeUpdate({ ...theme, fontSize });
         },
         setFontColor: (fontColor) => {
-          handleThemeUpdate({ ...theme, fontColor: fontColor ?? "#ffffff" });
+          handleThemeUpdate({
+            ...theme,
+            fontColor: fontColor ?? DEFAULT_FONT_COLOR,
+          });
         },
         setBackgroundColor: (backgroundColor) => {
           handleThemeUpdate({ ...theme, backgroundColor });

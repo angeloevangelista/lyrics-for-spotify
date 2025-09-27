@@ -10,19 +10,26 @@ interface IThemeContextProps {
   children: React.ReactNode;
 }
 
+enum FontSizes {
+  "small",
+  "medium",
+  "large",
+}
+
 interface ITheme {
-  fontSize: number;
+  fontSize: FontSizes;
   fontColor: string;
   backgroundColor?: string;
 }
 
 type IThemeContextData = {
   theme: ITheme;
-  setFontSize: React.Dispatch<number>;
+  setFontSize: React.Dispatch<FontSizes>;
   setFontColor: React.Dispatch<string | undefined>;
   setBackgroundColor: React.Dispatch<string | undefined>;
 };
 
+const DEFAULT_FONT_SIZE = FontSizes.small;
 const DEFAULT_FONT_COLOR = "#ffffff";
 const LOCAL_STORAGE_THEMES_KEY = "lyrics_for_spotify:theme";
 
@@ -30,7 +37,7 @@ const ThemeContext = createContext<IThemeContextData>({} as IThemeContextData);
 
 const ThemeContextProvider: React.FC<IThemeContextProps> = ({ children }) => {
   const [theme, setTheme] = useState<ITheme>({
-    fontSize: 24,
+    fontSize: DEFAULT_FONT_SIZE,
     fontColor: DEFAULT_FONT_COLOR,
   });
 
@@ -42,7 +49,22 @@ const ThemeContextProvider: React.FC<IThemeContextProps> = ({ children }) => {
       return;
     }
 
-    setTheme(JSON.parse(rawValue));
+    const nextTheme = JSON.parse(rawValue) as ITheme;
+
+    // adjust ITheme.fontSize
+    {
+      const fontSizeValues = Object.values(FontSizes).filter(
+        (v) => typeof v === "number"
+      ) as number[];
+
+      const parsedFontSize = Number(nextTheme.fontSize);
+
+      nextTheme.fontSize = fontSizeValues.includes(parsedFontSize)
+        ? parsedFontSize
+        : DEFAULT_FONT_SIZE;
+    }
+
+    setTheme(nextTheme);
   }, []);
 
   const handleThemeUpdate = useCallback((newTheme: ITheme) => {
@@ -75,4 +97,4 @@ const ThemeContextProvider: React.FC<IThemeContextProps> = ({ children }) => {
 
 const useTheme = () => useContext(ThemeContext);
 
-export { ThemeContextProvider, useTheme };
+export { ThemeContextProvider, useTheme, FontSizes };

@@ -1,5 +1,7 @@
-import { darken, lighten } from "polished";
 import styled from "styled-components";
+import { darken, lighten } from "polished";
+
+import { FontSizes } from "../../contexts/ThemeContext";
 
 export const Container = styled.div<{
   $background: string;
@@ -22,20 +24,32 @@ export const Container = styled.div<{
   --lyrics-color-passed: ${(props) => props.$fontColor};
 `;
 
-export const LyricsLines = styled.ul`
+const lineSizeFactorMap = {
+  [FontSizes.small]: 1,
+  [FontSizes.medium]: 2,
+  [FontSizes.large]: 3.2,
+};
+
+export const LyricsLines = styled.ul<{
+  $fontSize: FontSizes;
+}>`
   position: relative;
 
   font-weight: 700;
   line-height: 1.8em;
 
-  font-size: 1.4rem;
+  font-size: calc(1.4rem * ${({ $fontSize }) => lineSizeFactorMap[$fontSize]});
 
   @media (min-width: 768px) {
-    font-size: 1.6rem;
+    font-size: calc(
+      1.6rem * ${({ $fontSize }) => lineSizeFactorMap[$fontSize]}
+    );
   }
 
   @media (min-width: 1280px) {
-    font-size: 1.8rem;
+    font-size: calc(
+      1.8rem * ${({ $fontSize }) => lineSizeFactorMap[$fontSize]}
+    );
   }
 `;
 
@@ -161,6 +175,10 @@ export const LookAndFeelContainer = styled.ul<{
     justify-content: center;
 
     gap: 0.2rem;
+
+    > span {
+      text-transform: capitalize;
+    }
   }
 
   box-shadow: 0 0 8px -4px #000000cc;

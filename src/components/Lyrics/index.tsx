@@ -1,5 +1,6 @@
 import axios from "axios";
 import { FaCheck } from "react-icons/fa";
+import { ImFontSize } from "react-icons/im";
 import { Colorful } from "@uiw/react-color";
 import { PiPaintBrush } from "react-icons/pi";
 import { LuPaintRoller } from "react-icons/lu";
@@ -16,7 +17,7 @@ import React, {
 
 import Loading from "../Loading";
 import LyricsError from "../LyricsError";
-import { useTheme } from "../../contexts/ThemeContext";
+import { FontSizes, useTheme } from "../../contexts/ThemeContext";
 import { useLyrics } from "../../contexts/LyricsContext";
 
 import * as SC from "./styles";
@@ -34,7 +35,7 @@ interface LyricsProps {
 }
 
 const Lyrics: React.FC<LyricsProps> = () => {
-  let { theme, setFontColor, setBackgroundColor } = useTheme();
+  let { theme, setFontColor, setBackgroundColor, setFontSize } = useTheme();
   let { song, timestamp, setSong, notifyEvent } = useLyrics();
 
   const themeTweakingContainer = useRef<HTMLLIElement>(null);
@@ -43,11 +44,6 @@ const Lyrics: React.FC<LyricsProps> = () => {
   const [tweakingState, setTweakingState] = useState<
     "closed" | "choosing" | "font_color" | "background_color"
   >("closed");
-
-  // const [isTweakingTheme, setIsTweakingTheme] = useState(false);
-  // const [isTweakingFontColor, setIsTweakingFontColor] = useState(false);
-  // const [isTweakingBackgroundColor, setIsTweakingBackgroundColor] =
-  //   useState(false);
 
   const [lyrics, setLyrics] = useState<ILyricsLine[] | undefined>();
 
@@ -173,7 +169,7 @@ const Lyrics: React.FC<LyricsProps> = () => {
       {isLoading && <Loading />}
 
       {lyrics && (
-        <SC.LyricsLines>
+        <SC.LyricsLines $fontSize={theme.fontSize}>
           {lyrics.map((line, index) => (
             <SC.LyricLine
               key={`${line.seconds}-${index}`}
@@ -231,21 +227,32 @@ const Lyrics: React.FC<LyricsProps> = () => {
               $background={backgroundColor}
               $fontColor={theme.fontColor!}
             >
-              {/* <li>
+              <li>
                 <SC.LookAndFeelItemControls $fontColor={theme.fontColor!}>
-                  <button className="small">
-                    <FiMinus />
-                  </button>
+                  <button
+                    onClick={() => {
+                      const availableFontSizes = Object.values(
+                        FontSizes
+                      ).filter(
+                        (value) => typeof value === "number"
+                      ) as number[];
 
-                  <RiFontSize2 />
+                      const currentIndex = availableFontSizes.indexOf(
+                        theme.fontSize
+                      );
 
-                  <button className="small">
-                    <FiPlus />
+                      const nextIndex =
+                        (currentIndex + 1) % availableFontSizes.length;
+
+                      setFontSize(availableFontSizes[nextIndex]);
+                    }}
+                  >
+                    <ImFontSize />
                   </button>
                 </SC.LookAndFeelItemControls>
 
-                <span>Font Size</span>
-              </li> */}
+                <span>{FontSizes[theme.fontSize]}</span>
+              </li>
 
               <li>
                 <SC.LookAndFeelItemControls $fontColor={theme.fontColor!}>

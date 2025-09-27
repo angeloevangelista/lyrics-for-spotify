@@ -40,10 +40,14 @@ const Lyrics: React.FC<LyricsProps> = () => {
   const themeTweakingContainer = useRef<HTMLLIElement>(null);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [isTweakingTheme, setIsTweakingTheme] = useState(false);
-  const [isTweakingFontColor, setIsTweakingFontColor] = useState(false);
-  const [isTweakingBackgroundColor, setIsTweakingBackgroundColor] =
-    useState(false);
+  const [tweakingState, setTweakingState] = useState<
+    "closed" | "choosing" | "font_color" | "background_color"
+  >("closed");
+
+  // const [isTweakingTheme, setIsTweakingTheme] = useState(false);
+  // const [isTweakingFontColor, setIsTweakingFontColor] = useState(false);
+  // const [isTweakingBackgroundColor, setIsTweakingBackgroundColor] =
+  //   useState(false);
 
   const [lyrics, setLyrics] = useState<ILyricsLine[] | undefined>();
 
@@ -152,7 +156,7 @@ const Lyrics: React.FC<LyricsProps> = () => {
       $background={backgroundColor}
       $fontColor={theme.fontColor!}
       onClick={(event) => {
-        if (!isTweakingTheme || !themeTweakingContainer.current) {
+        if (tweakingState === "closed" || !themeTweakingContainer.current) {
           return;
         }
 
@@ -160,9 +164,7 @@ const Lyrics: React.FC<LyricsProps> = () => {
           themeTweakingContainer.current.contains(event.target as Node);
 
         if (!clickedOnThemeTweakingContainer) {
-          setIsTweakingTheme(false);
-          setIsTweakingFontColor(false);
-          setIsTweakingBackgroundColor(false);
+          setTweakingState("closed");
         }
       }}
     >
@@ -212,21 +214,19 @@ const Lyrics: React.FC<LyricsProps> = () => {
 
         <li
           ref={themeTweakingContainer}
-          className={isTweakingTheme ? "active" : ""}
+          className={tweakingState !== "closed" ? "active" : ""}
         >
           <button
             onClick={() => {
-              if (isTweakingTheme) {
-                setIsTweakingFontColor(false);
-                setIsTweakingBackgroundColor(false);
-              }
-              setIsTweakingTheme(!isTweakingTheme);
+              setTweakingState(
+                tweakingState === "closed" ? "choosing" : "closed"
+              );
             }}
           >
             <TbColorSwatch />
           </button>
 
-          {isTweakingTheme && (
+          {tweakingState !== "closed" && (
             <SC.LookAndFeelContainer
               $background={backgroundColor}
               $fontColor={theme.fontColor!}
@@ -251,8 +251,11 @@ const Lyrics: React.FC<LyricsProps> = () => {
                 <SC.LookAndFeelItemControls $fontColor={theme.fontColor!}>
                   <button
                     onClick={() => {
-                      setIsTweakingBackgroundColor(false);
-                      setIsTweakingFontColor(!isTweakingFontColor);
+                      setTweakingState(
+                        tweakingState === "font_color"
+                          ? "choosing"
+                          : "font_color"
+                      );
                     }}
                   >
                     <PiPaintBrush />
@@ -261,7 +264,7 @@ const Lyrics: React.FC<LyricsProps> = () => {
 
                 <span>Font Color</span>
 
-                {isTweakingFontColor && (
+                {tweakingState === "font_color" && (
                   <SC.ColorPickerContainer
                     $background={backgroundColor}
                     $fontColor={theme.fontColor!}
@@ -277,14 +280,14 @@ const Lyrics: React.FC<LyricsProps> = () => {
                     <div className="buttons">
                       <button
                         onClick={() => {
-                          setIsTweakingFontColor(false);
+                          setTweakingState("choosing");
                           setFontColor(undefined);
                         }}
                       >
                         <PiProhibitInsetBold />
                       </button>
 
-                      <button onClick={() => setIsTweakingFontColor(false)}>
+                      <button onClick={() => setTweakingState("choosing")}>
                         <FaCheck />
                       </button>
                     </div>
@@ -296,8 +299,11 @@ const Lyrics: React.FC<LyricsProps> = () => {
                 <SC.LookAndFeelItemControls $fontColor={theme.fontColor!}>
                   <button
                     onClick={() => {
-                      setIsTweakingFontColor(false);
-                      setIsTweakingBackgroundColor(!isTweakingBackgroundColor);
+                      setTweakingState(
+                        tweakingState === "background_color"
+                          ? "choosing"
+                          : "background_color"
+                      );
                     }}
                   >
                     <LuPaintRoller />
@@ -306,7 +312,7 @@ const Lyrics: React.FC<LyricsProps> = () => {
 
                 <span>Background color</span>
 
-                {isTweakingBackgroundColor && (
+                {tweakingState === "background_color" && (
                   <SC.ColorPickerContainer
                     $background={backgroundColor}
                     $fontColor={theme.fontColor!}
@@ -322,16 +328,14 @@ const Lyrics: React.FC<LyricsProps> = () => {
                     <div className="buttons">
                       <button
                         onClick={() => {
-                          setIsTweakingBackgroundColor(false);
+                          setTweakingState("choosing");
                           setBackgroundColor(undefined);
                         }}
                       >
                         <PiProhibitInsetBold />
                       </button>
 
-                      <button
-                        onClick={() => setIsTweakingBackgroundColor(false)}
-                      >
+                      <button onClick={() => setTweakingState("choosing")}>
                         <FaCheck />
                       </button>
                     </div>

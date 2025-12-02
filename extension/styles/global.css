@@ -17,3 +17,10 @@
   width: var(--encore-graphic-size-decorative-smaller, 16px) !important;
   height: var(--encore-graphic-size-decorative-smaller, 16px) !important;
 }
+
+
+
+/* Mini player */
+body > div > div:nth-child(2) > div:first-child {
+  display: none !important;
+}

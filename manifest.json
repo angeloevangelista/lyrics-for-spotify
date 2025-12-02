@@ -13,6 +13,7 @@
     {
       "run_at": "document_end",
       "matches": ["https://open.spotify.com/*"],
+      "match_about_blank": true,
       "js": [
         "extension/lib/icons.js",
         "extension/lib/popper.min.js",
